@@ -245,37 +245,46 @@ namespace OptimisationMethods
         /// <summary>
         /// Формулы интерполяции
         /// </summary>
-        /// <param name="ch">индекс метода</param>
-        /// <param name="a1">левая альфа</param>
-        /// <param name="b1">средняя альфа</param>
-        /// <param name="c1">правая альфа</param>
+        /// <param name="index">индекс метода</param>
+        /// <param name="a">левая альфа</param>
+        /// <param name="b">средняя альфа</param>
+        /// <param name="c">правая альфа</param>
         /// <param name="x">точка</param>
         /// <param name="p">направление поиска</param>
         /// <returns></returns>
-        public static double interpolationFunctions(int ch, double a1, double b1, double c1, Point x, Point p)
+        public static double interpolationFunctions(int index, double a, double b, double c, Point x, Point p)
         {
             double d = 0;
-            if (ch == 1)
-                d = ((x + a1 * p).FunctionValue * (b1 * b1 - c1 * c1) + (x + b1 * p).FunctionValue * (c1 * c1 - a1 * a1) + (x + c1 * p).FunctionValue * (a1 * a1 - b1 * b1)) / (((x + a1 * p).FunctionValue * (b1 - c1) + (x + b1 * p).FunctionValue * (c1 - a1) + (x + c1 * p).FunctionValue * (a1 - b1)) * 2);
-            if (ch == 2)
-                d = (a1 + b1) / 2 + ((x + a1 * p).FunctionValue - (x + b1 * p).FunctionValue) * ((x + a1 * p).FunctionValue - (x + b1 * p).FunctionValue) * (b1 - c1) * (c1 - a1) / (((x + a1 * p).FunctionValue * (b1 - c1) + (x + b1 * p).FunctionValue * (c1 - a1) + (x + c1 * p).FunctionValue * (a1 - b1)) * 2);
-            if (ch == 3)
-                d = b1 + ((b1 - a1) * (b1 - a1) * ((x + b1 * p).FunctionValue - (x + c1 * p).FunctionValue) - (b1 - c1) * (b1 - c1) * ((x + b1 * p).FunctionValue - (x + a1 * p).FunctionValue)) / ((b1 - a1) * ((x + b1 * p).FunctionValue - (x + c1 * p).FunctionValue) - (b1 - c1) * ((x + b1 * p).FunctionValue - (x + a1 * p).FunctionValue));
-            if (ch == 4)
-                d = b1 + ((b1 - a1) * ((x + a1 * p).FunctionValue - (x + c1 * p).FunctionValue)) / (((x + a1 * p).FunctionValue - 2 * (x + b1 * p).FunctionValue + (x + c1 * p).FunctionValue) * 2);
-            if (ch == 5)
+            if (index == 1)
+                d = ((x + a * p).FunctionValue * (b * b - c * c) 
+                    + (x + b * p).FunctionValue * (c * c - a * a) 
+                    + (x + c * p).FunctionValue * (a * a - b * b)) 
+                    / (((x + a * p).FunctionValue * (b - c) 
+                    + (x + b * p).FunctionValue * (c - a) 
+                    + (x + c * p).FunctionValue * (a - b)))/2;
+            if (index == 2)
+                d = (a + b) / 2 + ((x + a * p).FunctionValue - (x + b * p).FunctionValue) * ((x + a * p).FunctionValue - (x + b * p).FunctionValue) * (b - c) * (c - a) / (((x + a * p).FunctionValue * (b - c) + (x + b * p).FunctionValue * (c - a) + (x + c * p).FunctionValue * (a - b)) * 2);
+            if (index == 3)
+                d = b + ((b - a) * (b - a) * ((x + b * p).FunctionValue - (x + c * p).FunctionValue) - (b - c) * (b - c) * ((x + b * p).FunctionValue - (x + a * p).FunctionValue)) / ((b - a) * ((x + b * p).FunctionValue - (x + c * p).FunctionValue) - (b - c) * ((x + b * p).FunctionValue - (x + a * p).FunctionValue));
+            if (index == 4)
+                d = (a + b) / 2 + ((b - c) * (c - a) * ((x + a * p).FunctionValue - (x + b * p).FunctionValue)) 
+                    / (((x + a * p).FunctionValue * (b - c)
+                    + (x + b * p).FunctionValue * (c - a)
+                    + (x + c * p).FunctionValue * (a - b)))
+                    /2;
+            if (index == 5)
             {
-                double z = Operations.Derivative(x + a1 * p, p) + Operations.Derivative(x + b1 * p, p) + 3 * ((x + a1 * p).FunctionValue - (x + b1 * p).FunctionValue) / (b1 - a1);
-                double w = Math.Sqrt(z * z - Operations.Derivative(x + a1 * p, p) * Operations.Derivative(x + b1 * p, p));
-                double y = (z + w - Operations.Derivative(x + a1 * p, p)) / (Operations.Derivative(x + b1 * p, p) - Operations.Derivative(x + a1 * p, p) + 2 * w);
+                double z = Operations.Derivative(x + a * p, p) + Operations.Derivative(x + b * p, p) + 3 * ((x + a * p).FunctionValue - (x + b * p).FunctionValue) / (b - a);
+                double w = Math.Sqrt(z * z - Operations.Derivative(x + a * p, p) * Operations.Derivative(x + b * p, p));
+                double y = (z + w - Operations.Derivative(x + a * p, p)) / (Operations.Derivative(x + b * p, p) - Operations.Derivative(x + a * p, p) + 2 * w);
                 if (0 <= y && y <= 1)
-                    d = a1 + y * (b1 - a1);
+                    d = a + y * (b - a);
                 else
                 {
                     if (y > 1)
-                        d = b1;
+                        d = b;
                     if (y < 0)
-                        d = a1;
+                        d = a;
                 }
             }
             return d;

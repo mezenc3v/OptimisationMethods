@@ -451,38 +451,37 @@ namespace OptimisationMethods
         /// <returns></returns>
         private static Search Powell(Search search, int max)
         {
-            //метод не рабоатет
             Point point = search.CurrentPoint;
             Point direction = search.SearchDirection;
 
-            double c = (search.alphaA + search.alphaB) / 2, d;
+            double b = (search.alphaA + search.alphaB) / 2, d;
             int counter = 1;
-            d = Operations.interpolationFunctions(1, search.alphaA, c, search.alphaB, point, direction);
-            while (Math.Abs((c - d) / c) > search.Error 
-                && (Math.Abs(((point + c * direction).FunctionValue 
+            d = Operations.interpolationFunctions(1, search.alphaA, b, search.alphaB, point, direction);
+            while (Math.Abs((b - d) / b) > search.Error 
+                && (Math.Abs(((point + b * direction).FunctionValue 
                 - (point + d * direction).FunctionValue) 
-                / (point + c * direction).FunctionValue) > search.Error) 
+                / (point + b * direction).FunctionValue) > search.Error) 
                 && counter < max)
             {
-                if ((point + c * direction).FunctionValue > (point + d * direction).FunctionValue)
+                if ((point + b * direction).FunctionValue > (point + d * direction).FunctionValue)
                 {
-                    if (c < d)
-                        search.alphaA = c;
+                    if (b < d)
+                        search.alphaA = b;
                     else
-                        search.alphaB = c;
-                    c = d;
+                        search.alphaB = b;
+                    b = d;
                 }
                 else
                 {
-                    if (c < d)
+                    if (b < d)
                         search.alphaB = d;
                     else
                         search.alphaA = d;
                 }
-                d = Operations.interpolationFunctions(4, search.alphaA, c, search.alphaB, point, direction);
+                d = Operations.interpolationFunctions(4, search.alphaA, b, search.alphaB, point, direction);
                 counter++;
             }
-            search.alphaA = c;
+            search.alphaA = b;
             search.alphaB = d;
             search.alpha = (search.alphaA + search.alphaB) / 2;
             search.CurrentPoint = search.CurrentPoint + search.alpha * search.SearchDirection;
@@ -1114,8 +1113,8 @@ namespace OptimisationMethods
         private static Search ComboSearch(Search search)
         {
             search = Svenn(search);
-            search = Bolzano(search, 10);
-            return LinearInterpolation(search, 3);
+            search = Bolzano(search, 5);
+            return Powell(search, 2);
         }
     }
 }
