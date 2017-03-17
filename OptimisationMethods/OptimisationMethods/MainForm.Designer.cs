@@ -128,6 +128,11 @@
             // 
             this.maxIterationsNumericUpDown.Location = new System.Drawing.Point(136, 70);
             this.maxIterationsNumericUpDown.Margin = new System.Windows.Forms.Padding(2);
+            this.maxIterationsNumericUpDown.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
             this.maxIterationsNumericUpDown.Name = "maxIterationsNumericUpDown";
             this.maxIterationsNumericUpDown.Size = new System.Drawing.Size(67, 20);
             this.maxIterationsNumericUpDown.TabIndex = 38;

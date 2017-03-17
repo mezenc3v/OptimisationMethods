@@ -100,17 +100,23 @@ namespace OptimisationMethods
         public static Point Gradient(Point x)
         {
             Point result = new Point(x);
-            Point leftpoint = new Point(x);
-            Point rightPoint = new Point(x);
-            double h = Math.Pow(10, -10);
+            Point point1 = new Point(x);
+            Point point2 = new Point(x);
+            Point point3 = new Point(x);
+            Point point4 = new Point(x);
+            double h = Math.Pow(10, -9);
             for (int i = 0; i < x.sizeCol; i++)
             {
-                leftpoint.matrix[0, i] -= h;
-                rightPoint.matrix[0, i] += h;
-                result.matrix[0, i] = ((leftpoint.FunctionValue - 4 * x.FunctionValue + 3 * rightPoint.FunctionValue) 
-                    / (2 * h));
-                leftpoint.matrix[0, i] += h;
-                rightPoint.matrix[0, i] -= h;
+                point4.matrix[0, i] -= 2 * h;
+                point3.matrix[0, i] -= h;
+                point2.matrix[0, i] += h;
+                point1.matrix[0, i] += 2 * h;
+                result.matrix[0, i] = ((-point1.FunctionValue + 8 * point2.FunctionValue - 8 * point3.FunctionValue + point4.FunctionValue)
+                    / (12 * h));
+                point4.matrix[0, i] += 2 * h;
+                point3.matrix[0, i] += h;
+                point2.matrix[0, i] -= h;
+                point1.matrix[0, i] -= 2 * h;
             }
             return result;
         }       
@@ -255,39 +261,58 @@ namespace OptimisationMethods
         public static double interpolationFunctions(int index, double a, double b, double c, Point x, Point p)
         {
             double d = 0;
-            if (index == 1)
-                d = ((x + a * p).FunctionValue * (b * b - c * c) 
-                    + (x + b * p).FunctionValue * (c * c - a * a) 
-                    + (x + c * p).FunctionValue * (a * a - b * b)) 
-                    / (((x + a * p).FunctionValue * (b - c) 
-                    + (x + b * p).FunctionValue * (c - a) 
-                    + (x + c * p).FunctionValue * (a - b)))/2;
-            if (index == 2)
-                d = (a + b) / 2 + ((x + a * p).FunctionValue - (x + b * p).FunctionValue) * ((x + a * p).FunctionValue - (x + b * p).FunctionValue) * (b - c) * (c - a) / (((x + a * p).FunctionValue * (b - c) + (x + b * p).FunctionValue * (c - a) + (x + c * p).FunctionValue * (a - b)) * 2);
-            if (index == 3)
-                d = b + ((b - a) * (b - a) * ((x + b * p).FunctionValue - (x + c * p).FunctionValue) - (b - c) * (b - c) * ((x + b * p).FunctionValue - (x + a * p).FunctionValue)) / ((b - a) * ((x + b * p).FunctionValue - (x + c * p).FunctionValue) - (b - c) * ((x + b * p).FunctionValue - (x + a * p).FunctionValue));
-            if (index == 4)
-                d = (a + b) / 2 + ((b - c) * (c - a) * ((x + a * p).FunctionValue - (x + b * p).FunctionValue)) 
+            switch (index)
+            {
+                case 1:
+                    d = ((x + a * p).FunctionValue * (b * b - c * c)
+                        + (x + b * p).FunctionValue * (c * c - a * a)
+                        + (x + c * p).FunctionValue * (a * a - b * b))
+                        / (((x + a * p).FunctionValue * (b - c)
+                        + (x + b * p).FunctionValue * (c - a)
+                        + (x + c * p).FunctionValue * (a - b))) / 2;
+                    return d;
+                case 2:
+                    d = (a + b) / 2 + ((x + a * p).FunctionValue - (x + b * p).FunctionValue) 
+                        * ((x + a * p).FunctionValue - (x + b * p).FunctionValue) 
+                        * (b - c) * (c - a) 
+                        / (((x + a * p).FunctionValue * (b - c) 
+                        + (x + b * p).FunctionValue * (c - a) 
+                        + (x + c * p).FunctionValue * (a - b))) / 2;
+                    return d;
+                case 3:
+                    d = b + ((b - a) * (b - a) * ((x + b * p).FunctionValue 
+                        - (x + c * p).FunctionValue) 
+                        - (b - c) * (b - c) 
+                        * ((x + b * p).FunctionValue 
+                        - (x + a * p).FunctionValue)) 
+                        / ((b - a) * ((x + b * p).FunctionValue - (x + c * p).FunctionValue) 
+                        - (b - c) * ((x + b * p).FunctionValue - (x + a * p).FunctionValue));
+                    return d;
+                case 4:
+                    d = (a + b) / 2 + ((b - c) * (c - a) * ((x + a * p).FunctionValue - (x + b * p).FunctionValue))
                     / (((x + a * p).FunctionValue * (b - c)
                     + (x + b * p).FunctionValue * (c - a)
                     + (x + c * p).FunctionValue * (a - b)))
-                    /2;
-            if (index == 5)
-            {
-                double z = Operations.Derivative(x + a * p, p) + Operations.Derivative(x + b * p, p) + 3 * ((x + a * p).FunctionValue - (x + b * p).FunctionValue) / (b - a);
-                double w = Math.Sqrt(z * z - Operations.Derivative(x + a * p, p) * Operations.Derivative(x + b * p, p));
-                double y = (z + w - Operations.Derivative(x + a * p, p)) / (Operations.Derivative(x + b * p, p) - Operations.Derivative(x + a * p, p) + 2 * w);
-                if (0 <= y && y <= 1)
-                    d = a + y * (b - a);
-                else
-                {
-                    if (y > 1)
-                        d = b;
-                    if (y < 0)
-                        d = a;
-                }
+                    / 2;
+                    return d;
+                case 5:
+                    double z = Operations.Derivative(x + a * p, p) + Operations.Derivative(x + b * p, p) 
+                        + 3 * ((x + a * p).FunctionValue - (x + b * p).FunctionValue) / (b - a);
+                    double w = Math.Sqrt(z * z - Operations.Derivative(x + a * p, p) * Operations.Derivative(x + b * p, p));
+                    double y = (z + w - Operations.Derivative(x + a * p, p)) 
+                        / (Operations.Derivative(x + b * p, p) - Operations.Derivative(x + a * p, p) + 2 * w);
+                    if (0 <= y && y <= 1)
+                        d = a + y * (b - a);
+                    else
+                    {
+                        if (y > 1)
+                            d = b;
+                        if (y < 0)
+                            d = a;
+                    }
+                    return d;
+                default: return 0;
             }
-            return d;
         }
         /// <summary>
         /// Функция сортировки для метода Нелдера-Мида
@@ -311,25 +336,25 @@ namespace OptimisationMethods
         /// Вспомогательный метод для Хукка-Дживса
         /// </summary>
         /// <param name="x">первая точка</param>
-        /// <param name="l">вторая точка</param>
-        /// <param name="r">третья точка</param>
+        /// <param name="leftPoint">вторая точка</param>
+        /// <param name="rightPoint">третья точка</param>
         /// <param name="temp">четвертая точка</param>
         /// <param name="sh">шаг поиска</param>
-        public static void Search(Point x, Point l, Point r, Point temp, double sh)
+        public static void Search(Point x, Point leftPoint, Point rightPoint, Point temp, double sh)
         {
-            l = new Point(x);
-            r = new Point(x);
+            leftPoint = new Point(x);
+            rightPoint = new Point(x);
 
             for (int i = 0; i < x.sizeCol; i++)
             {
-                l.matrix[0, i] -= sh;
-                r.matrix[0, i] += sh;
+                leftPoint.matrix[0, i] -= sh;
+                rightPoint.matrix[0, i] += sh;
 
-                if (x.FunctionValue > r.FunctionValue && r.FunctionValue < l.FunctionValue)
-                    temp.matrix[0, i] = r.matrix[0, i];
-                if (x.FunctionValue > l.FunctionValue && r.FunctionValue > l.FunctionValue)
-                    temp.matrix[0, i] = l.matrix[0, i];
-                if (x.FunctionValue == l.FunctionValue && x.FunctionValue == r.FunctionValue)
+                if (x.FunctionValue > rightPoint.FunctionValue && rightPoint.FunctionValue < leftPoint.FunctionValue)
+                    temp.matrix[0, i] = rightPoint.matrix[0, i];
+                else if (x.FunctionValue > leftPoint.FunctionValue && rightPoint.FunctionValue > leftPoint.FunctionValue)
+                    temp.matrix[0, i] = leftPoint.matrix[0, i];
+                else if (x.FunctionValue == leftPoint.FunctionValue && x.FunctionValue == rightPoint.FunctionValue)
                     temp.matrix[0, i] = x.matrix[0, i];
             }
 
@@ -374,46 +399,36 @@ namespace OptimisationMethods
         public static Point HessianMatrix(Point x)
         {
             Point result = new Point(x.sizeCol, x.sizeCol, x.FunctionIndex);
-            Point temp = new Point(x);
-            Point temp1 = new Point(x);
-            Point temp2 = new Point(x);
-            Point temp3 = new Point(x);
-            Point temp4 = new Point(x);
+            Point point1 = new Point(x);
+            Point point2 = new Point(x);
+            Point point3 = new Point(x);
+            Point point4 = new Point(x);
+            Point point5 = new Point(x);
             double h = Math.Pow(10, -7);
             for (int i = 0; i < x.sizeCol; i++)
                 for (int j = 0; j < x.sizeCol; j++)
                 {
                     /*if(i!=j)
                     {*/
-                    temp.matrix[0, i] += h;
-                    temp.matrix[0, j] += h;
-                    temp1.matrix[0, i] += h;
-                    temp1.matrix[0, j] -= h;
-                    temp2.matrix[0, i] -= h;
-                    temp2.matrix[0, j] += h;
-                    temp3.matrix[0, i] -= h;
-                    temp3.matrix[0, j] -= h;
+                    point1.matrix[0, i] += h;
+                    point1.matrix[0, j] += h;
+                    point2.matrix[0, i] += h;
+                    point2.matrix[0, j] -= h;
+                    point3.matrix[0, i] -= h;
+                    point3.matrix[0, j] += h;
+                    point4.matrix[0, i] -= h;
+                    point4.matrix[0, j] -= h;
 
-                    result.matrix[i, j] = ((temp.FunctionValue - temp1.FunctionValue - temp2.FunctionValue + temp3.FunctionValue) / (4 * h * h));
+                    result.matrix[i, j] = ((point1.FunctionValue - point2.FunctionValue - point3.FunctionValue + point4.FunctionValue) / (4 * h * h));
 
-                    //result.matrix[i, j] = ((2*f2(temp) - 5*f2(temp1) + 4*f2(temp2) - f2(temp3)) / ( h * h));
-                    temp.matrix[0, i] -= h;
-                    temp.matrix[0, j] -= h;
-                    temp1.matrix[0, i] -= h;
-                    temp1.matrix[0, j] += h;
-                    temp2.matrix[0, i] += h;
-                    temp2.matrix[0, j] -= h;
-                    temp3.matrix[0, i] += h;
-                    temp3.matrix[0, j] += h;
-                    /*}
-                    else
-                    {
-                            temp.matrix[0, j] -= h;
-                            temp1.matrix[0, j] += h;
-                            result.matrix[i, j] = ((f2(temp) - 2 * f2(x) + f2(temp1)) / (h * h));
-                            temp.matrix[0, j] += h;
-                            temp1.matrix[0, j] -= h;       
-                    }*/
+                    point1.matrix[0, i] -= h;
+                    point1.matrix[0, j] -= h;
+                    point2.matrix[0, i] -= h;
+                    point2.matrix[0, j] += h;
+                    point3.matrix[0, i] += h;
+                    point3.matrix[0, j] -= h;
+                    point4.matrix[0, i] += h;
+                    point4.matrix[0, j] += h;
                 }
 
             return result;
