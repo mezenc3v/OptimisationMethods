@@ -338,33 +338,33 @@ namespace OptimisationMethods
         {
             Search searchParameters = new Search(search);
 
-            double x3 = (searchParameters.alphaA + searchParameters.alphaB) / 2, step, x1, x2;
+            double pointCenter = (searchParameters.alphaA + searchParameters.alphaB) / 2, step, pointLeft, pointRight;
             int counter = 1;
             do
             {
                 step = Math.Abs(searchParameters.alphaB - searchParameters.alphaA);
-                x1 = searchParameters.alphaA + step / 4;
-                x2 = searchParameters.alphaB - step / 4;
-                if ((searchParameters.CurrentPoint + x1 * searchParameters.SearchDirection).FunctionValue 
-                    < (searchParameters.CurrentPoint + x3 * searchParameters.SearchDirection).FunctionValue)
+                pointLeft = searchParameters.alphaA + step / 4;
+                pointRight = searchParameters.alphaB - step / 4;
+                if ((searchParameters.CurrentPoint + pointLeft * searchParameters.SearchDirection).FunctionValue 
+                    < (searchParameters.CurrentPoint + pointCenter * searchParameters.SearchDirection).FunctionValue)
                 {
-                    searchParameters.alphaB = x3;
-                    x3 = x1;
+                    searchParameters.alphaB = pointCenter;
+                    pointCenter = pointLeft;
                 }
                 else
                 {
-                    if ((searchParameters.CurrentPoint + x1 * searchParameters.SearchDirection).FunctionValue 
-                        >= (searchParameters.CurrentPoint + x3 * searchParameters.SearchDirection).FunctionValue 
-                        && (searchParameters.CurrentPoint + x3 * searchParameters.SearchDirection).FunctionValue 
-                        <= (searchParameters.CurrentPoint + x2 * searchParameters.SearchDirection).FunctionValue)
+                    if ((searchParameters.CurrentPoint + pointLeft * searchParameters.SearchDirection).FunctionValue 
+                        >= (searchParameters.CurrentPoint + pointCenter * searchParameters.SearchDirection).FunctionValue 
+                        && (searchParameters.CurrentPoint + pointCenter * searchParameters.SearchDirection).FunctionValue 
+                        <= (searchParameters.CurrentPoint + pointRight * searchParameters.SearchDirection).FunctionValue)
                     {
-                        searchParameters.alphaA = x1;
-                        searchParameters.alphaB = x2;
+                        searchParameters.alphaA = pointLeft;
+                        searchParameters.alphaB = pointRight;
                     }
                     else
                     {
-                        searchParameters.alphaA = x3;
-                        x3 = x2;
+                        searchParameters.alphaA = pointCenter;
+                        pointCenter = pointRight;
                     }
                 }
                 counter++;

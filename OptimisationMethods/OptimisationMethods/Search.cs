@@ -42,10 +42,6 @@
         /// Число итераций
         /// </summary>
         public int Iterations { get; set; }
-        public Search()
-        {
-
-        }
         public Search(Search search)
         {
             StartPoint = new Point(search.StartPoint);
