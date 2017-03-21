@@ -395,7 +395,9 @@ namespace OptimisationMethods
                 && (Math.Abs(((searchParameters.CurrentPoint + center * searchParameters.SearchDirection).FunctionValue 
                 - (searchParameters.CurrentPoint + expectedMin * searchParameters.SearchDirection).FunctionValue) 
                 / (searchParameters.CurrentPoint + center * searchParameters.SearchDirection).FunctionValue) 
-                > searchParameters.DiscretizationError) 
+                > searchParameters.DiscretizationError
+                && Math.Abs(Operations.Derivative(searchParameters.CurrentPoint + expectedMin
+                * searchParameters.SearchDirection, searchParameters.SearchDirection)) > searchParameters.DiscretizationError) 
                 && count < max)
             {
                 step = step / 2;
@@ -408,7 +410,7 @@ namespace OptimisationMethods
                     searchParameters.CurrentPoint, searchParameters.SearchDirection);
                 count++;
             }
-            searchParameters.alphaA = center;
+            searchParameters.alphaA = expectedMin;
             searchParameters.alphaB = expectedMin;
             searchParameters.alpha = (searchParameters.alphaA + searchParameters.alphaB) / 2;
             searchParameters.CurrentPoint = searchParameters.CurrentPoint + searchParameters.alpha * searchParameters.SearchDirection;
@@ -424,7 +426,6 @@ namespace OptimisationMethods
         private static Search LinearInterpolation(Search search, int max)
         {
             Search searchParameters = new Search(search);
-
             int counter = 1;
             searchParameters.alpha = searchParameters.alphaB 
                 - Operations.Derivative(searchParameters.CurrentPoint + searchParameters.alphaB 
@@ -473,9 +474,12 @@ namespace OptimisationMethods
                 && (Math.Abs(((searchParameters.CurrentPoint + centerPoint * searchParameters.SearchDirection).FunctionValue 
                 - (searchParameters.CurrentPoint + expectedMin * searchParameters.SearchDirection).FunctionValue) 
                 / (searchParameters.CurrentPoint + centerPoint * searchParameters.SearchDirection).FunctionValue) > searchParameters.DiscretizationError) 
-                && counter < max)
+                && counter < max
+                && Math.Abs(Operations.Derivative(searchParameters.CurrentPoint + expectedMin 
+                * searchParameters.SearchDirection, searchParameters.SearchDirection)) > searchParameters.DiscretizationError)
             {
-                if ((searchParameters.CurrentPoint + centerPoint * searchParameters.SearchDirection).FunctionValue > (searchParameters.CurrentPoint + expectedMin * searchParameters.SearchDirection).FunctionValue)
+                if ((searchParameters.CurrentPoint + centerPoint * searchParameters.SearchDirection).FunctionValue 
+                    > (searchParameters.CurrentPoint + expectedMin * searchParameters.SearchDirection).FunctionValue)
                 {
                     if (centerPoint < expectedMin)
                         searchParameters.alphaA = centerPoint;
@@ -493,7 +497,7 @@ namespace OptimisationMethods
                 expectedMin = Operations.interpolationFunctions(4, searchParameters.alphaA, centerPoint, searchParameters.alphaB, searchParameters.CurrentPoint, searchParameters.SearchDirection);
                 counter++;
             }
-            searchParameters.alphaA = centerPoint;
+            searchParameters.alphaA = expectedMin;
             searchParameters.alphaB = expectedMin;
             searchParameters.alpha = (searchParameters.alphaA + searchParameters.alphaB) / 2;
             searchParameters.CurrentPoint = searchParameters.CurrentPoint + searchParameters.alpha * searchParameters.SearchDirection;
@@ -508,7 +512,6 @@ namespace OptimisationMethods
         /// <returns></returns>
         private static Search BicubicInterpolation(Search search, int max)
         {
-            //метод не работает
             Search searchParameters = new Search(search);
             int counter = 1;
             double expectedMin = Operations.interpolationFunctions(5, searchParameters.alphaA, searchParameters.alphaB, 0, searchParameters.CurrentPoint, searchParameters.SearchDirection);
@@ -521,7 +524,7 @@ namespace OptimisationMethods
                 expectedMin = Operations.interpolationFunctions(5, searchParameters.alphaA, searchParameters.alphaB, 0, searchParameters.CurrentPoint, searchParameters.SearchDirection);
                 counter++;
             }
-            searchParameters.alpha = (searchParameters.alphaA + searchParameters.alphaB) / 2;
+            searchParameters.alpha = expectedMin;
             searchParameters.CurrentPoint = searchParameters.CurrentPoint + searchParameters.alpha * searchParameters.SearchDirection;
             return searchParameters;
         }
@@ -1129,7 +1132,7 @@ namespace OptimisationMethods
             const int maxIterations = 5;
             Search intervalSearchParameters = Svenn(search);
             Search reduceIntervalSearchParameters = Dichotomy(intervalSearchParameters, maxIterations);
-            Search minimumSearchParameters = Powell(reduceIntervalSearchParameters, maxIterations);
+            Search minimumSearchParameters = Ei(reduceIntervalSearchParameters, maxIterations);
             return minimumSearchParameters;
         }
     }
