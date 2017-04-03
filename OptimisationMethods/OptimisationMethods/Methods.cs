@@ -34,7 +34,7 @@ namespace OptimisationMethods
                 case 11:
                 case 12:
                 case 13:
-                case 14: results = Methods.VariableMetricMethods(search); break;
+                case 14: results = Methods.VariableMetricMethods(search, indexMethod); break;
                 case 15:
                 case 16:
                 case 17:
@@ -912,7 +912,7 @@ namespace OptimisationMethods
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        private static SearchResults VariableMetricMethods(Search search)
+        private static SearchResults VariableMetricMethods(Search search, int index)
         {
             Search searchParameters = new Search(search);
 
@@ -921,7 +921,7 @@ namespace OptimisationMethods
             Point oldPoint = new Point();
             do
             {
-                A = Operations.VariableMetricMethodsAncillary(A, oldPoint, search.CurrentPoint, search.Iterations, search.Function);
+                A = Operations.VariableMetricMethodsAncillary(A, oldPoint, search.CurrentPoint, search.Iterations, index);
                 search.SearchDirection = -(Operations.Gradient(search.CurrentPoint)) * A;
                 oldPoint = search.CurrentPoint;
                 search = ComboSearch(search);
@@ -1129,7 +1129,7 @@ namespace OptimisationMethods
             const int maxIterations = 5;
             Search intervalSearchParameters = Svenn(search);
             Search reduceIntervalSearchParameters = Dichotomy(intervalSearchParameters, maxIterations);
-            Search minimumSearchParameters = Powell(reduceIntervalSearchParameters, maxIterations);
+            Search minimumSearchParameters = Ei(reduceIntervalSearchParameters, maxIterations);
             return minimumSearchParameters;
         }
     }

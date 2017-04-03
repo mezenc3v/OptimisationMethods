@@ -150,7 +150,6 @@ namespace OptimisationMethods
                             else
                                 E.matrix[i, j] = 0;
                         }
-
                     B = E - (dx * Operations.Transpose(gamma)) / (dx * Operations.Transpose(gamma));
                     A = B * A * B + (dx * Operations.Transpose(dx)) / (gamma * Operations.Transpose(dx));
 
