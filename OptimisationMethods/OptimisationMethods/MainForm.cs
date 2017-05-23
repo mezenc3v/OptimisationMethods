@@ -114,6 +114,7 @@ namespace OptimisationMethods
         {
             //заполнение входных параметров
             int functionIndex = functionsComboBox.SelectedIndex;
+            int indexMethod = methodsComboBox.SelectedIndex;
             double error = Convert.ToDouble(errorTextBox.Text);
             int maxIteration = (int)maxIterationsNumericUpDown.Value;
             //сепаратор точек
@@ -133,9 +134,9 @@ namespace OptimisationMethods
                 }
             }
             //создаем экземпляр сущности поиска
-            Search search = new Search(startPoint, startDirection, error, functionIndex, maxIteration);
+            Search search = new Search(startPoint, startDirection, error, functionIndex, maxIteration, indexMethod);
             //ищем выбранным методом
-            SearchResults results = Methods.Method(search, methodsComboBox.SelectedIndex);
+            SearchResults results = Methods.Method(search);
             //=возвращаем результаты
             return results;
         }

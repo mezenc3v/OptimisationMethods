@@ -166,7 +166,7 @@
             this.errorTextBox.Name = "errorTextBox";
             this.errorTextBox.Size = new System.Drawing.Size(67, 20);
             this.errorTextBox.TabIndex = 35;
-            this.errorTextBox.Text = "0,00001";
+            this.errorTextBox.Text = "0.00001";
             // 
             // searchDirectionTextBox
             // 

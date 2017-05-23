@@ -12,11 +12,11 @@ namespace OptimisationMethods
         /// <param name="search"></param>
         /// <param name="indexMethod">индекс метода</param>
         /// <returns></returns>
-        public static SearchResults Method(Search search, int indexMethod)
+        public static SearchResults Method(Search search)
         {
             SearchResults results;
 
-            switch (indexMethod)
+            switch (search.IndexMethod)
             {
                 case 0:
                     results = Methods.LinearSearch(search); break;
@@ -34,7 +34,7 @@ namespace OptimisationMethods
                 case 11:
                 case 12:
                 case 13:
-                case 14: results = Methods.VariableMetricMethods(search, indexMethod); break;
+                case 14: results = Methods.VariableMetricMethods(search); break;
                 case 15:
                 case 16:
                 case 17:
@@ -840,15 +840,18 @@ namespace OptimisationMethods
                     searchParameters.SearchDirection = -(Operations.Gradient(searchParameters.CurrentPoint));
                 else
                 {
-                    beta = Operations.NonlinearConjugateGradientFunctions(oldDirection, oldPoint, searchParameters.CurrentPoint, searchParameters.Function);
+                    beta = Operations.NonlinearConjugateGradientFunctions(oldDirection, oldPoint, searchParameters.CurrentPoint, searchParameters.IndexMethod);
 
                     searchParameters.SearchDirection = -(Operations.Gradient(searchParameters.CurrentPoint)) + beta * searchParameters.SearchDirection;
                 }
 
-                searchParameters = ComboSearch(searchParameters);
+                searchParameters.SearchDirection = Operations.UnitVector(searchParameters.SearchDirection);
+
                 oldPoint = searchParameters.CurrentPoint;
                 oldDirection = searchParameters.SearchDirection;
 
+                searchParameters = ComboSearch(searchParameters);
+               
                 searchParameters.Iterations++;
             }
             while (Operations.Norm(
@@ -915,7 +918,7 @@ namespace OptimisationMethods
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        private static SearchResults VariableMetricMethods(Search search, int index)
+        private static SearchResults VariableMetricMethods(Search search)
         {
             Search searchParameters = new Search(search);
 
@@ -924,13 +927,13 @@ namespace OptimisationMethods
             Point oldPoint = new Point();
             do
             {
-                A = Operations.VariableMetricMethodsAncillary(A, oldPoint, search.CurrentPoint, search.Iterations, index);
+                A = Operations.VariableMetricMethodsAncillary(A, oldPoint, search.CurrentPoint, search.Iterations, search.IndexMethod);
                 search.SearchDirection = -(Operations.Gradient(search.CurrentPoint)) * A;
                 oldPoint = search.CurrentPoint;
                 search = ComboSearch(search);
                 search.Iterations++;
             }
-            while (Operations.Norm(Operations.Gradient(search.CurrentPoint)) > search.DiscretizationError);
+            while (Operations.Norm(Operations.Gradient(search.CurrentPoint)) > search.DiscretizationError && search.Iterations < search.MaxIterations);
 
             SearchResults results = new SearchResults(search);
             return results;
