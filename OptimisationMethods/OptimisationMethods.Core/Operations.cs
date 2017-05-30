@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OptimisationMethods
+namespace OptimisationMethods.Core
 {
     public static class Operations
     {         
@@ -300,7 +300,7 @@ namespace OptimisationMethods
                     double w = Math.Sqrt(z * z - Operations.Derivative(x + a * p, p) * Operations.Derivative(x + b * p, p));
                     double y = (z + w - Operations.Derivative(x + a * p, p)) 
                         / (Operations.Derivative(x + b * p, p) - Operations.Derivative(x + a * p, p) + 2 * w);
-                    if (0 <= y && y <= 1)
+                    /*if (0 <= y && y <= 1)
                         d = a + y * (b - a);
                     else
                     {
@@ -308,7 +308,7 @@ namespace OptimisationMethods
                             d = b;
                         if (y < 0)
                             d = a;
-                    }
+                    }*/
                     return d;
                 default: return 0;
             }

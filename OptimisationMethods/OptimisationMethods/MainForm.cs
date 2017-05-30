@@ -1,8 +1,8 @@
-﻿using OptimisationMethods.Entities;
+﻿using OptimisationMethods.Core;
 using System;
 using System.Windows.Forms;
 
-namespace OptimisationMethods
+namespace OptimisationMethods.WinForms
 {
     public partial class mainForm : Form
     {

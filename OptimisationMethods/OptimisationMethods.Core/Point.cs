@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OptimisationMethods
+namespace OptimisationMethods.Core
 {
     public class Point
     {
@@ -23,7 +23,8 @@ namespace OptimisationMethods
         /// <summary>
         /// значение функции в текущей точке
         /// </summary>
-        public double FunctionValue {
+        public double FunctionValue
+        {
             get
             {
                 return functions(this);
@@ -53,7 +54,7 @@ namespace OptimisationMethods
                     matrix[i, j] = x.matrix[i, j];
                 }
             FunctionIndex = x.FunctionIndex;
-        }     
+        }
         /// <summary>
         /// Список функций
         /// </summary>
@@ -134,7 +135,6 @@ namespace OptimisationMethods
         {
             if (a.sizeRow != b.sizeRow || a.sizeCol != b.sizeCol)
             {
-                System.Windows.Forms.MessageBox.Show("Ошибка сложения матриц!");
                 return a;//возвращаем начальную
             }
 
@@ -173,7 +173,6 @@ namespace OptimisationMethods
         {
             if (a.sizeRow != b.sizeRow || a.sizeCol != b.sizeCol)
             {
-                System.Windows.Forms.MessageBox.Show("Ошибка вычитания матриц!");
                 return a;//возвращаем начальную
             }
 

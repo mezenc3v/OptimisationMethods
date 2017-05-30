@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OptimisationMethods.Entities
+namespace OptimisationMethods.Core
 {
     public class SearchResults
     {

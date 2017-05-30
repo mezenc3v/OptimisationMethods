@@ -1,4 +1,4 @@
-﻿namespace OptimisationMethods
+﻿namespace OptimisationMethods.WinForms
 {
     partial class mainForm
     {
